@@ -187,3 +187,6 @@ desktop.ini
 !.env.sample
 !.sourcery.yml
 !.deepsource.toml
+.env.*
+.next/
+coverage/
