@@ -847,3 +847,7 @@ VITE_KONG_API_KEY=tk_front_123456789
 Follow the instructions in "Option 2: Public Access Setup" above to expose your local backend to the internet.
 
 **Note:** Shared backend instances should not be used for destructive testing or load testing.
+
+## License
+
+Apache-2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
