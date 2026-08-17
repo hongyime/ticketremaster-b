@@ -163,6 +163,7 @@ desktop.ini
 .build-hash
 
 
+
 # AI / editor dot directories (managed via sourcerepo)
 .*
 !.github/
