@@ -48,6 +48,22 @@ TicketRemaster is deliberately split into layers that match the committed Kubern
 - Redis is used for ephemeral state such as purchase hold cache and verification locks, not as the primary record of business data.
 - RabbitMQ carries delayed hold expiry and transfer notification work so those flows are not tied to synchronous request latency.
 
+### Ticket-purchase HTTP reliability
+
+The purchase orchestrator gives each outbound HTTP call one configurable
+`TOTAL_TIMEOUT` budget (10 seconds by default), including attempts, response
+reads and retry delays. At most four calls can remain outstanding per process;
+timed-out work keeps its slot until cleanup completes. Responses are limited to
+1 MiB. Only GET, HEAD and OPTIONS retry transient failures; writes and redirects
+are not automatically replayed. Existing connect/read timeout overrides still
+apply within the total budget.
+
+A timeout does not prove that a downstream write failed to commit. The purchase
+workflow's uncertain-write reconciliation and end-to-end idempotency still need
+a separate review. These HTTP limits do not bound the entire multi-service
+purchase workflow or its gRPC calls. Run the isolated checks with
+`python -m pytest orchestrators/ticket-purchase-orchestrator/tests`.
+
 ## How to Start Backend: Complete Guide
 
 This guide walks you through setting up the TicketRemaster backend from scratch. Choose your setup path:

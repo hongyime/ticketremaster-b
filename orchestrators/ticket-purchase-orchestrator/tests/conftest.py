@@ -1,6 +1,6 @@
 import os, sys, pathlib
 
-os.environ.setdefault("JWT_SECRET", "test-secret")
+os.environ.setdefault("JWT_SECRET", "synthetic-test-key-at-least-32-characters")
 os.environ.setdefault("OUTSYSTEMS_API_KEY", "test-key")
 os.environ.setdefault("CREDIT_SERVICE_URL", "http://credit-mock")
 os.environ.setdefault("RABBITMQ_HOST", "localhost")
@@ -22,7 +22,9 @@ from unittest.mock import patch
 
 @pytest.fixture()
 def app():
-    with patch("startup_queue_setup.bootstrap"), \
+    with patch("dotenv.load_dotenv", return_value=False), \
+         patch.dict(os.environ, {"REDIS_URL": ""}), \
+         patch("startup_queue_setup.bootstrap"), \
          patch("dlx_consumer.start_dlx_consumer"):
         from app import create_app
         return create_app({"TESTING": True})

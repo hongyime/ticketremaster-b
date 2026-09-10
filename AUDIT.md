@@ -73,3 +73,59 @@ N/A — personal/educational project scope.
 
 ## 10. REMEDIATION ROADMAP
 No critical remediation actions required. Ongoing dependency monitoring via Dependabot.
+
+## 11. HTTP request diagnosis and maintenance plan — 2026-09-10
+
+Status: implemented and locally verified; hosted checks and runtime verification pending.
+
+The ticket-purchase orchestrator declares `TOTAL_TIMEOUT=10` but never uses it. Its
+request loop gives every attempt a fresh connect/read timeout and sleeps between
+attempts. An isolated fake HTTP probe recorded three POST attempts and 22.5
+simulated seconds. The helper is used for ticket creation, credit updates and
+transaction logging (`routes.py:545`, `:568`, `:646`), with no helper-level
+idempotency contract. Repeating an uncertain write can repeat a side effect.
+
+`service_client.py` also checks `if exc.response` for server errors. Requests
+responses with failing HTTP status are false-valued, so that condition prevents
+the intended server-error retry. Invalid success JSON escapes the error contract,
+and every response is read without a size limit. Requests connect/read timeouts
+do not bound the complete response download, so merely reducing the timeout on
+each retry would leave slowly arriving bodies unbounded.
+
+Planned work, recorded before implementation:
+
+- [x] Use one cancellable network budget across attempts, streamed body reads and
+  backoff; bound decoded response size and close connections on all exits.
+- [x] Retry only safe read methods and transient failures; make one attempt for
+  writes, without automatic redirects. Preserve downstream error-code handling.
+- [ ] Verify timeout, slow-body, retry, body-limit, circuit and payment-adjacent
+  workflows with synthetic responses; add a hosted Python check.
+- [ ] Publish the reviewed source, preserve the 22 preexisting Docker/Compose
+  edits, and verify the backend deployment when its runtime is identified.
+
+This change does not establish end-to-end purchase idempotency. A lost write
+response can still leave the downstream result unknown; the existing purchase
+compensation/reconciliation workflow needs a separate transaction-level review.
+No real payment, credit update, notification, database seed or cluster startup
+is part of verification. The README describes a local Kubernetes/Cloudflare
+backend; its current production runtime has not been identified.
+
+References: [Requests timeout semantics](https://requests.readthedocs.io/en/latest/user/quickstart/#timeouts),
+[HTTPX phase timeouts](https://www.python-httpx.org/advanced/timeouts/),
+[Python cancellable timeout scope](https://docs.python.org/3/library/asyncio-task.html#asyncio.timeout).
+
+The first timing probe also measured 2.58 seconds in cold HTTP-client
+construction before any response read started. An asynchronous timeout alone
+cannot preempt that synchronous initialization. A four-slot execution pool now
+bounds the caller's wait independently; timed-out workers retain their slots
+until cleanup actually finishes, preventing unbounded background admission.
+The unused Requests dependency is removed from this orchestrator after checking
+its source and imported shared modules; HTTPX supplies its transport.
+
+Local verification passed 51 HTTP and purchase-route cases plus focused JSON
+compatibility checks and Ruff. Fixtures cover response loss after a write,
+safe-read recovery, downstream input errors, circuit recovery, a shared retry
+budget, slow bodies, connection closure, oversized/malformed responses, 204 and
+JSON-null success, header isolation, and four occupied execution slots refusing
+additional work. Two peers use loopback sockets; other HTTP responses are
+synthetic. No external provider, real transaction or existing database was used.
