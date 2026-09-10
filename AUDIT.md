@@ -135,3 +135,17 @@ The hosted Python 3.12 workflow also passed on the complete implementation:
 Production verification is still open: the configured local Kubernetes API
 refused the read-only connection, and the backend runtime/deployment location
 has been requested. Publishing source does not establish a running backend release.
+
+### CodeQL configuration follow-up
+
+The first main release triggered both default CodeQL and the custom
+`.github/workflows/codeql.yml`. Default CodeQL passed with Python and Actions
+coverage, while the custom Python analysis upload was rejected because default
+setup was enabled. The custom workflow is now disabled in repository Actions
+settings; its file and history remain intact. Default setup, its languages,
+query suite and weekly schedule are unchanged. This removes the duplicate
+automatic analysis without reducing the active language coverage. The earlier
+failed upload remains in historical run 34487788524; the passing default scan is
+run 34487787481. Do not re-enable the custom workflow alongside default setup.
+
+Reference: [GitHub's default-setup upload conflict](https://docs.github.com/en/code-security/reference/code-scanning/sarif-files/troubleshoot-sarif-uploads/default-setup-enabled).
