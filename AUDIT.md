@@ -76,7 +76,7 @@ No critical remediation actions required. Ongoing dependency monitoring via Depe
 
 ## 11. HTTP request diagnosis and maintenance plan — 2026-09-10
 
-Status: implemented and locally verified; hosted checks and runtime verification pending.
+Status: implemented; local and hosted Python checks passed. Backend deployment remains unverified.
 
 The ticket-purchase orchestrator declares `TOTAL_TIMEOUT=10` but never uses it. Its
 request loop gives every attempt a fresh connect/read timeout and sleeps between
@@ -98,7 +98,7 @@ Planned work, recorded before implementation:
   backoff; bound decoded response size and close connections on all exits.
 - [x] Retry only safe read methods and transient failures; make one attempt for
   writes, without automatic redirects. Preserve downstream error-code handling.
-- [ ] Verify timeout, slow-body, retry, body-limit, circuit and payment-adjacent
+- [x] Verify timeout, slow-body, retry, body-limit, circuit and payment-adjacent
   workflows with synthetic responses; add a hosted Python check.
 - [ ] Publish the reviewed source, preserve the 22 preexisting Docker/Compose
   edits, and verify the backend deployment when its runtime is identified.
@@ -129,3 +129,9 @@ budget, slow bodies, connection closure, oversized/malformed responses, 204 and
 JSON-null success, header isolation, and four occupied execution slots refusing
 additional work. Two peers use loopback sockets; other HTTP responses are
 synthetic. No external provider, real transaction or existing database was used.
+
+The hosted Python 3.12 workflow also passed on the complete implementation:
+[Purchase HTTP checks](https://github.com/hongyime/ticketremaster-b/actions/runs/34487149343).
+Production verification is still open: the configured local Kubernetes API
+refused the read-only connection, and the backend runtime/deployment location
+has been requested. Publishing source does not establish a running backend release.
