@@ -112,6 +112,7 @@ def get_my_hold(event_id):
 
 
 
+@bp.post('/inventory/batch')
 def create_inventory_batch():
     """
     Batch-create seat inventory for an event
