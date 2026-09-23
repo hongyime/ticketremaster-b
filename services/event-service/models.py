@@ -27,10 +27,10 @@ class Event(db.Model):
             'date': self.date.isoformat(),
             'type': self.type,
             'price': self.price,
-            'image': self.image or 'https://picsum.photos/seed/default-event/800/450',
             'cancelledAt': self.cancelledAt.isoformat() if self.cancelledAt else None,
         }
         if not summary:
             payload['description'] = self.description
+            payload['image'] = self.image or 'https://picsum.photos/seed/default-event/800/450'
         payload['createdAt'] = self.createdAt.isoformat()
         return payload
