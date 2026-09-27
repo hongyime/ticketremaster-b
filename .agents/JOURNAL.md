@@ -7,3 +7,5 @@
 2026-09-27: Added explicit compose.dev.yaml overlay for 21 application services with polling reload, dependency isolation, production stages, GHCR publishing and guarded retention. Merged local config checks and six retention tests passed. Image builds/full stack runtime and CI publication remain unverified. Existing staged service/test changes preserved; no commit/push.
 
 2026-09-27: Added an explicit application-source sync overlay for SMB/remote Docker hosts. Dev images snapshot source after dependencies and use existing appuser ownership; source edits use sync only. Keep production settings and the gateway config mount unchanged, and retain data volumes during ordinary teardown.
+
+2026-09-27: Specify postgresql+psycopg2 in local SQLAlchemy database settings to match the installed driver; no application or dependency change is required.

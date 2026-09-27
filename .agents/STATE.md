@@ -11,3 +11,5 @@
 2026-09-27: Added explicit compose.dev.yaml overlay for 21 application services with polling reload, dependency isolation, production stages, GHCR publishing and guarded retention. Merged local config checks and six retention tests passed. Image builds/full stack runtime and CI publication remain unverified. Existing staged service/test changes preserved; no commit/push.
 
 2026-09-27: Prepared explicit SMB compose.watch.yaml with 21 dev source snapshots and 63 sync rules, appuser-owned targets, explicit service dependency paths, root build contexts and unchanged production stages/data mounts. Three Compose parse cases passed; full runtime verification remains separate; no protected source module was read. No local image build, publication or original-checkout mutation in this preparation.
+
+2026-09-27: Initial user/event development builds passed. Documented the explicit psycopg2 SQLAlchemy URL scheme after a synthetic runtime setting selected the wrong default driver. Application source and dependencies are unchanged; runtime verification remains in progress.

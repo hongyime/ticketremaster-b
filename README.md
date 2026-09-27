@@ -874,6 +874,12 @@ Use Docker Compose 2.24.4 or newer. Prepare a separate .env.dev with local
 development settings using the variable names documented above. This overlay
 replaces service env files, so it does not load the production .env.
 
+For SQLAlchemy database settings such as `USER_SERVICE_DATABASE_URL` and
+`EVENT_SERVICE_DATABASE_URL`, use the explicit `postgresql+psycopg2://` scheme
+with your development database user, password, service hostname and database name.
+These images install `psycopg2-binary`; an unspecified PostgreSQL driver may select
+the unavailable `psycopg` driver on newer SQLAlchemy versions.
+
 Run these commands from this repository in PowerShell or a Linux shell:
 
 ~~~sh
