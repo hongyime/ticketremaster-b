@@ -5,13 +5,17 @@ COPY services/event-service/requirements.txt /tmp/requirements.txt
 RUN sed '/^[Pp][Yy][Tt][Ee][Ss][Tt]/d' /tmp/requirements.txt > /tmp/runtime-requirements.txt \
     && pip install --no-cache-dir -r /tmp/runtime-requirements.txt
 
+RUN useradd -u 1001 -m appuser && chown appuser:appuser /app
+
 FROM dependencies AS dev
 RUN pip install --no-cache-dir -r /tmp/requirements.txt watchfiles==1.3.0
+USER appuser
 EXPOSE 5000
 CMD ["sh", "-c", "flask db upgrade && exec watchfiles --target-type command 'gunicorn -w 1 -b 0.0.0.0:5000 app:app' /app /shared"]
 
 FROM dependencies AS production
 COPY services/event-service/ .
 COPY shared/ /shared/
+USER appuser
 EXPOSE 5000
 CMD ["sh", "-c", "flask db upgrade && gunicorn -w 4 -b 0.0.0.0:5000 app:app"]

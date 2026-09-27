@@ -5,8 +5,11 @@ COPY services/seat-inventory-service/requirements.txt /tmp/requirements.txt
 RUN sed '/^[Pp][Yy][Tt][Ee][Ss][Tt]/d' /tmp/requirements.txt > /tmp/runtime-requirements.txt \
     && pip install --no-cache-dir -r /tmp/runtime-requirements.txt
 
+RUN useradd -u 1001 -m appuser && chown appuser:appuser /app
+
 FROM dependencies AS dev
 RUN pip install --no-cache-dir -r /tmp/requirements.txt watchfiles==1.3.0
+USER appuser
 EXPOSE 5000 50051
 CMD ["sh", "-c", "flask db upgrade && exec watchfiles --target-type command 'python server.py' /app /shared"]
 
@@ -14,4 +17,5 @@ FROM dependencies AS production
 COPY services/seat-inventory-service/ .
 COPY shared/ /shared/
 EXPOSE 5000 50051
+USER appuser
 CMD ["sh", "-c", "flask db upgrade && python server.py"]

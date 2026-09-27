@@ -21,10 +21,10 @@ jobs:
       matrix:
         include: [{"name": "credit-transaction-service", "context": "./services/credit-transaction-service", "file": "services/credit-transaction-service/Dockerfile"}, {"name": "event-service", "context": ".", "file": "services/event-service/Dockerfile"}, {"name": "marketplace-service", "context": "./services/marketplace-service", "file": "services/marketplace-service/Dockerfile"}, {"name": "notification-service", "context": "./services/notification-service", "file": "services/notification-service/Dockerfile"}, {"name": "otp-wrapper", "context": "./services/otp-wrapper", "file": "services/otp-wrapper/Dockerfile"}, {"name": "seat-inventory-service", "context": ".", "file": "services/seat-inventory-service/Dockerfile"}, {"name": "seat-service", "context": "./services/seat-service", "file": "services/seat-service/Dockerfile"}, {"name": "stripe-wrapper", "context": "./services/stripe-wrapper", "file": "services/stripe-wrapper/Dockerfile"}, {"name": "ticket-log-service", "context": "./services/ticket-log-service", "file": "services/ticket-log-service/Dockerfile"}, {"name": "ticket-service", "context": ".", "file": "services/ticket-service/Dockerfile"}, {"name": "transfer-service", "context": "./services/transfer-service", "file": "services/transfer-service/Dockerfile"}, {"name": "user-service", "context": ".", "file": "services/user-service/Dockerfile"}, {"name": "venue-service", "context": "./services/venue-service", "file": "services/venue-service/Dockerfile"}, {"name": "auth-orchestrator", "context": ".", "file": "orchestrators/auth-orchestrator/Dockerfile"}, {"name": "credit-orchestrator", "context": "./orchestrators/credit-orchestrator", "file": "orchestrators/credit-orchestrator/Dockerfile"}, {"name": "event-orchestrator", "context": ".", "file": "orchestrators/event-orchestrator/Dockerfile"}, {"name": "marketplace-orchestrator", "context": "./orchestrators/marketplace-orchestrator", "file": "orchestrators/marketplace-orchestrator/Dockerfile"}, {"name": "qr-orchestrator", "context": "./orchestrators/qr-orchestrator", "file": "orchestrators/qr-orchestrator/Dockerfile"}, {"name": "ticket-purchase-orchestrator", "context": ".", "file": "orchestrators/ticket-purchase-orchestrator/Dockerfile"}, {"name": "ticket-verification-orchestrator", "context": "./orchestrators/ticket-verification-orchestrator", "file": "orchestrators/ticket-verification-orchestrator/Dockerfile"}, {"name": "transfer-orchestrator", "context": ".", "file": "orchestrators/transfer-orchestrator/Dockerfile"}]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Verify manifest retention rules
         run: node --test .github/scripts/ghcr-retention.test.cjs
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
       - name: Image name
         id: image
         env:
@@ -32,12 +32,12 @@ jobs:
           COMPONENT: ${{ matrix.name }}
         run: |
           echo "name=ghcr.io/${REPOSITORY,,}/$COMPONENT" >> "$GITHUB_OUTPUT"
-      - uses: docker/login-action@v3
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: docker/metadata-action@v5
+      - uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
         id: metadata
         with:
           images: ${{ steps.image.outputs.name }}
@@ -45,7 +45,7 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=sha,format=short,prefix=sha-
-      - uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: ${{ matrix.context }}
           file: ${{ matrix.file }}
@@ -74,9 +74,9 @@ jobs:
       matrix:
         include: [{"name": "credit-transaction-service"}, {"name": "event-service"}, {"name": "marketplace-service"}, {"name": "notification-service"}, {"name": "otp-wrapper"}, {"name": "seat-inventory-service"}, {"name": "seat-service"}, {"name": "stripe-wrapper"}, {"name": "ticket-log-service"}, {"name": "ticket-service"}, {"name": "transfer-service"}, {"name": "user-service"}, {"name": "venue-service"}, {"name": "auth-orchestrator"}, {"name": "credit-orchestrator"}, {"name": "event-orchestrator"}, {"name": "marketplace-orchestrator"}, {"name": "qr-orchestrator"}, {"name": "ticket-purchase-orchestrator"}, {"name": "ticket-verification-orchestrator"}, {"name": "transfer-orchestrator"}]
     steps:
-      - uses: actions/checkout@v4
-      - uses: docker/setup-buildx-action@v3
-      - uses: docker/login-action@v3
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -88,7 +88,7 @@ jobs:
           COMPONENT: ${{ matrix.name }}
         run: echo "name=${REPOSITORY,,}/$COMPONENT" >> "$GITHUB_OUTPUT"
       - name: Verify package visibility
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         env:
           PACKAGE_NAME: ${{ steps.package.outputs.name }}
         with:
@@ -103,7 +103,7 @@ jobs:
             if (pkg.visibility !== 'public') core.warning('Set this package to public in GitHub package settings, then verify anonymous access.');
       - name: Verify manifests and select old tagged versions
         id: retention
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         env:
           PACKAGE_NAME: ${{ steps.package.outputs.name }}
         with:
@@ -112,7 +112,7 @@ jobs:
             await plan({github, context, core});
       - name: Retain three untagged versions
         if: steps.retention.outputs.safe_single_arch == 'true'
-        uses: actions/delete-package-versions@v5
+        uses: actions/delete-package-versions@e5bc658cc4c965c472efe991f8beea3981499c55 # v5
         with:
           owner: ${{ github.repository_owner }}
           package-name: ${{ steps.package.outputs.name }}
@@ -121,7 +121,7 @@ jobs:
           min-versions-to-keep: 3
       - name: Bound tagged history separately
         if: steps.retention.outputs.tagged_ids != ''
-        uses: actions/delete-package-versions@v5
+        uses: actions/delete-package-versions@e5bc658cc4c965c472efe991f8beea3981499c55 # v5
         with:
           owner: ${{ github.repository_owner }}
           package-name: ${{ steps.package.outputs.name }}

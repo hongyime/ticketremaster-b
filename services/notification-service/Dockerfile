@@ -5,12 +5,16 @@ COPY requirements.txt /tmp/requirements.txt
 RUN sed '/^[Pp][Yy][Tt][Ee][Ss][Tt]/d' /tmp/requirements.txt > /tmp/runtime-requirements.txt \
     && pip install --no-cache-dir -r /tmp/runtime-requirements.txt
 
+RUN useradd -u 1001 -m appuser && chown appuser:appuser /app
+
 FROM dependencies AS dev
 RUN pip install --no-cache-dir -r /tmp/requirements.txt watchfiles==1.3.0
+USER appuser
 EXPOSE 8109
 CMD ["sh", "-c", "exec watchfiles --target-type command 'python app.py' /app /shared"]
 
 FROM dependencies AS production
 COPY . .
 EXPOSE 8109
+USER appuser
 CMD ["python", "app.py"]
