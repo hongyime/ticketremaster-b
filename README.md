@@ -867,3 +867,105 @@ Follow the instructions in "Option 2: Public Access Setup" above to expose your 
 ## License
 
 Apache-2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
+
+## Development containers: Windows, WSL, Linux, and SMB
+
+Use Docker Compose 2.24.4 or newer. Prepare a separate .env.dev with local
+development settings using the variable names documented above. This overlay
+replaces service env files, so it does not load the production .env.
+
+Run these commands from this repository in PowerShell or a Linux shell:
+
+~~~sh
+# Once initially, and again only after requirements or Dockerfile dependency changes:
+docker compose --env-file .env.dev -f docker-compose.yml -f compose.dev.yaml build
+# Daily development; source edits never build or recreate containers:
+docker compose --env-file .env.dev -f docker-compose.yml -f compose.dev.yaml up --no-build
+~~~
+
+The explicit overlay uses a separate Compose project (ticketremaster-dev).
+It retains the existing published ports; use it on a development host or adjust
+ports if another stack already uses them. Python source and shared modules are
+bind-mounted. Dependencies live under /usr/local, outside those mounts.
+A polling reloader restarts application processes when source changes, including
+the gRPC and notification processes. Migrations run once at container startup.
+Polling works with Windows/SMB mounts where native filesystem events may not arrive.
+There is no automatic rebuild or dependency installation on a source edit.
+
+The production Dockerfile target is production; production publishing runs in
+GitHub Actions. Images use ghcr.io/<repository-owner>/ticketremaster-b/<service>.
+Local dev tags have pull_policy: never; if an image is absent, build it explicitly
+with the first command. For an optional production image download, run explicitly:
+
+~~~sh
+docker pull ghcr.io/hongyime/ticketremaster-b/user-service:latest
+~~~
+
+CI publishes latest on the default branch and a short SHA tag. It builds
+linux/amd64 with provenance/SBOM attestations disabled, then inspects every tagged
+manifest before cleanup. Encountering a multi-platform index, attestation, unknown
+manifest, or registry error stops cleanup. Retention keeps the newest three tagged
+versions plus latest, and three untagged versions; tagged history is bounded
+separately because untagged-only cleanup cannot remove SHA tags. The package must
+grant this repository Actions admin access for deletion. Existing release tags
+may be removed when outside retention. Do not repurpose these packages for
+multi-platform publication without updating the retention design.
+
+Image sizes remain unknown until CI builds them; CI reports compressed layer
+bytes. Aim for about 200 MB where dependencies permit. Public package visibility
+must be checked on the package itself. Treat 500 MB storage and 1 GB/month transfer
+for private packages only as planning assumptions, and verify current
+[GitHub billing documentation](https://docs.github.com/en/billing/concepts/product-billing/github-packages).
+Downloads authenticated with GITHUB_TOKEN inside GitHub Actions do not count
+toward package transfer usage.
+
+
+### Windows and Linux development shortcuts
+
+The explicit development Compose commands above also have native launchers:
+
+| Step | Windows PowerShell | Linux |
+| --- | --- | --- |
+| First build, or after dependency manifest changes | `pwsh -File ./dev.ps1 build` | `sh dev.sh build` |
+| Daily development | `pwsh -File ./dev.ps1` | `sh dev.sh` |
+| Stop the development stack | `pwsh -File ./dev.ps1 down` | `sh dev.sh down` |
+| View development logs | `pwsh -File ./dev.ps1 logs` | `sh dev.sh logs` |
+
+Create the documented local `.env.dev` first. Daily startup always passes
+`--no-build`; source edits use the development mounts and reloaders. Dependency
+changes require the explicit build command, then the documented dependency-volume
+refresh where applicable. Pulling a production image remains a separate explicit
+Compose command. Optional profiles are selected explicitly with `COMPOSE_PROFILES`
+or the full Compose command; they are not enabled by these launchers.
+
+The scripts resolve the checkout directory and preserve Docker's exit code.
+Invoke Linux scripts with `sh` on SMB mounts where executable bits are unavailable.
+Mount paths must exist on the Docker daemon's host; a Windows drive letter is not
+a Linux mount path. Existing production and Windows administration launchers remain
+separate from these development commands.
+
+### PostgreSQL 18 development volume layout
+
+The development overlay mounts each isolated database volume at
+`/var/lib/postgresql`, matching the PostgreSQL 18 image's versioned data directory.
+Its `!override` replaces the inherited older mount target; named volumes retain
+the `ticketremaster-dev` project prefix.
+
+The existing production Compose file still mounts `/var/lib/postgresql/data`.
+That deployment requires a separate, verified data migration before changing its
+mount: PostgreSQL 18 defaults to `/var/lib/postgresql/18/docker`, so data may be
+in an anonymous volume rather than the intended named volume. Identify the live
+`PGDATA` and mounts, make and test a backup, then migrate during a maintenance
+window. Do not delete volumes or simply change the production mount and restart.
+This development change does not migrate or touch a running database.
+See the [official image PGDATA guidance](https://github.com/docker-library/docs/blob/master/postgres/README.md#pgdata).
+
+### SMB and remote Docker hosts
+
+Run Compose from a checkout path that the selected Docker daemon can access.
+A mapped Windows drive is not automatically available inside WSL or on a remote
+Linux Docker host; use that host's mounted share path or a local checkout when
+necessary. Polling handles missing file-change events after the bind mount works;
+it cannot make an inaccessible path visible. The maintenance checks validated
+Compose configuration and Windows/Linux reload fixtures, but did not launch this
+full stack or verify its actual SMB bind mount.

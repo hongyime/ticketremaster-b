@@ -1,0 +1,594 @@
+# Explicit development overlay; requires Docker Compose 2.24.4+.
+name: ticketremaster-dev
+services:
+  credit-transaction-service:
+    image: ticketremaster-dev/credit-transaction-service:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./services/credit-transaction-service
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  event-service:
+    image: ticketremaster-dev/event-service:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./services/event-service
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  marketplace-service:
+    image: ticketremaster-dev/marketplace-service:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./services/marketplace-service
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  notification-service:
+    image: ticketremaster-dev/notification-service:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./services/notification-service
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+    healthcheck:
+      test:
+      - CMD
+      - python
+      - -c
+      - import urllib.request; urllib.request.urlopen('http://localhost:8109/health')
+  otp-wrapper:
+    image: ticketremaster-dev/otp-wrapper:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./services/otp-wrapper
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  seat-inventory-service:
+    image: ticketremaster-dev/seat-inventory-service:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./services/seat-inventory-service
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  seat-service:
+    image: ticketremaster-dev/seat-service:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./services/seat-service
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  stripe-wrapper:
+    image: ticketremaster-dev/stripe-wrapper:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./services/stripe-wrapper
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  ticket-log-service:
+    image: ticketremaster-dev/ticket-log-service:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./services/ticket-log-service
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  ticket-service:
+    image: ticketremaster-dev/ticket-service:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./services/ticket-service
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  transfer-service:
+    image: ticketremaster-dev/transfer-service:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./services/transfer-service
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  user-service:
+    image: ticketremaster-dev/user-service:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./services/user-service
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  venue-service:
+    image: ticketremaster-dev/venue-service:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./services/venue-service
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  auth-orchestrator:
+    image: ticketremaster-dev/auth-orchestrator:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./orchestrators/auth-orchestrator
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  credit-orchestrator:
+    image: ticketremaster-dev/credit-orchestrator:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./orchestrators/credit-orchestrator
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  event-orchestrator:
+    image: ticketremaster-dev/event-orchestrator:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./orchestrators/event-orchestrator
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  marketplace-orchestrator:
+    image: ticketremaster-dev/marketplace-orchestrator:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./orchestrators/marketplace-orchestrator
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  qr-orchestrator:
+    image: ticketremaster-dev/qr-orchestrator:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./orchestrators/qr-orchestrator
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  ticket-purchase-orchestrator:
+    image: ticketremaster-dev/ticket-purchase-orchestrator:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./orchestrators/ticket-purchase-orchestrator
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  ticket-verification-orchestrator:
+    image: ticketremaster-dev/ticket-verification-orchestrator:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./orchestrators/ticket-verification-orchestrator
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  transfer-orchestrator:
+    image: ticketremaster-dev/transfer-orchestrator:local
+    pull_policy: never
+    build:
+      target: dev
+    restart: 'no'
+    init: true
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+      WATCHFILES_POLL_DELAY_MS: '500'
+      PYTHONDONTWRITEBYTECODE: '1'
+    volumes:
+    - type: bind
+      source: ./orchestrators/transfer-orchestrator
+      target: /app
+    - type: bind
+      source: ./shared
+      target: /shared
+      read_only: true
+    - type: bind
+      source: ./shared
+      target: /app/shared
+      read_only: true
+    env_file: !override
+    - .env.dev
+  user-service-db:
+    env_file: !override
+    - .env.dev
+    # PostgreSQL 18 stores PGDATA below /var/lib/postgresql/18/docker.
+    volumes: !override
+    - user-service-db-data:/var/lib/postgresql
+  event-service-db:
+    env_file: !override
+    - .env.dev
+    # PostgreSQL 18 stores PGDATA below /var/lib/postgresql/18/docker.
+    volumes: !override
+    - event-service-db-data:/var/lib/postgresql
+  seat-inventory-service-db:
+    env_file: !override
+    - .env.dev
+    # PostgreSQL 18 stores PGDATA below /var/lib/postgresql/18/docker.
+    volumes: !override
+    - seat-inventory-service-db-data:/var/lib/postgresql
+  ticket-service-db:
+    env_file: !override
+    - .env.dev
+    # PostgreSQL 18 stores PGDATA below /var/lib/postgresql/18/docker.
+    volumes: !override
+    - ticket-service-db-data:/var/lib/postgresql
+  ticket-log-service-db:
+    env_file: !override
+    - .env.dev
+    # PostgreSQL 18 stores PGDATA below /var/lib/postgresql/18/docker.
+    volumes: !override
+    - ticket-log-service-db-data:/var/lib/postgresql
+  marketplace-service-db:
+    env_file: !override
+    - .env.dev
+    # PostgreSQL 18 stores PGDATA below /var/lib/postgresql/18/docker.
+    volumes: !override
+    - marketplace-service-db-data:/var/lib/postgresql
+  transfer-service-db:
+    env_file: !override
+    - .env.dev
+    # PostgreSQL 18 stores PGDATA below /var/lib/postgresql/18/docker.
+    volumes: !override
+    - transfer-service-db-data:/var/lib/postgresql
+  venue-service-db:
+    env_file: !override
+    - .env.dev
+    # PostgreSQL 18 stores PGDATA below /var/lib/postgresql/18/docker.
+    volumes: !override
+    - venue-service-db-data:/var/lib/postgresql
+  seat-service-db:
+    env_file: !override
+    - .env.dev
+    # PostgreSQL 18 stores PGDATA below /var/lib/postgresql/18/docker.
+    volumes: !override
+    - seat-service-db-data:/var/lib/postgresql
+  credit-transaction-service-db:
+    env_file: !override
+    - .env.dev
+    # PostgreSQL 18 stores PGDATA below /var/lib/postgresql/18/docker.
+    volumes: !override
+    - credit-transaction-service-db-data:/var/lib/postgresql
