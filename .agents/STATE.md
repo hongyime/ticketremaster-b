@@ -7,3 +7,5 @@
 - Deployment: the documented local Kubernetes endpoint is unavailable. Runtime location/deployment instructions were requested; no backend release, seed job or infrastructure startup has occurred.
 - CI configuration: default CodeQL passed for Python and Actions. The duplicate custom `.github/workflows/codeql.yml` is disabled in Actions settings after its conflicting upload failed; default coverage and schedule remain unchanged. Keep one active CodeQL setup.
 - Remaining: backend deployment verification. End-to-end purchase idempotency and uncertain-write reconciliation need a separate review. Portfolio release evidence records main publication and checks separately from this source checkout.
+
+2026-09-27: Added explicit compose.dev.yaml overlay for 21 application services with polling reload, dependency isolation, production stages, GHCR publishing and guarded retention. Merged local config checks and six retention tests passed. Image builds/full stack runtime and CI publication remain unverified. Existing staged service/test changes preserved; no commit/push.
