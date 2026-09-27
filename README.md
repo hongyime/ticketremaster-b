@@ -889,7 +889,8 @@ ports if another stack already uses them. Python source and shared modules are
 bind-mounted. Dependencies live under /usr/local, outside those mounts.
 A polling reloader restarts application processes when source changes, including
 the gRPC and notification processes. Migrations run once at container startup.
-Polling works with Windows/SMB mounts where native filesystem events may not arrive.
+Polling handles missing filesystem events after a bind mount is accessible.
+Use the explicit sync overlay below when the Docker host cannot mount SMB source.
 There is no automatic rebuild or dependency installation on a source edit.
 
 The production Dockerfile target is production; production publishing runs in
@@ -962,10 +963,49 @@ See the [official image PGDATA guidance](https://github.com/docker-library/docs/
 
 ### SMB and remote Docker hosts
 
-Run Compose from a checkout path that the selected Docker daemon can access.
-A mapped Windows drive is not automatically available inside WSL or on a remote
-Linux Docker host; use that host's mounted share path or a local checkout when
-necessary. Polling handles missing file-change events after the bind mount works;
-it cannot make an inaccessible path visible. The maintenance checks validated
-Compose configuration and Windows/Linux reload fixtures, but did not launch this
-full stack or verify its actual SMB bind mount.
+When the Docker host cannot bind-mount application source from SMB, use Docker
+Compose 2.32.2+ and the explicit `compose.watch.yaml` overlay after the initial
+development build. The Compose client must be able to read the checkout.
+
+~~~sh
+# Build once, or after dependency manifests/system packages change:
+docker compose --env-file .env.dev -f docker-compose.yml -f compose.dev.yaml -f compose.watch.yaml build user-service
+# Explicitly acquire the selected third-party database image if absent:
+docker compose --env-file .env.dev -f docker-compose.yml -f compose.dev.yaml -f compose.watch.yaml pull user-service-db
+# Daily source edits synchronize without image builds or container recreation:
+docker compose --env-file .env.dev -f docker-compose.yml -f compose.dev.yaml -f compose.watch.yaml up --no-build --pull never --watch user-service
+~~~
+
+Each of the 21 development images includes its own source and both shared-module
+locations after dependency installation, owned by the existing application user.
+The watch overlay replaces the application bind mounts with three `action: sync`
+rules per service. The polling reloader restarts only the application process.
+Python dependencies stay under `/usr/local`; dependency manifests, caches and
+private environment/key files are excluded from synchronization. The exact
+`shared/secrets.py` application module is retained because services import it;
+this source-name exception does not include other secret or credential files.
+Changes to
+dependency manifests require the explicit build command and a normal restart.
+There are no automatic rebuild rules. The regular bind-mount mode remains usable
+when the Docker host can access the checkout.
+
+The example starts only `user-service` and its database. Select other application
+services explicitly as needed. The unchanged gateway still binds its Kong template
+from the host; starting `kong` or the entire stack requires that separate config
+path to be visible to the daemon. This overlay does not migrate data or change
+production ports, commands, mounts or application settings.
+
+After stopping watch, remove only this development project's containers/networks
+while retaining its data volumes:
+
+~~~sh
+docker compose --env-file .env.dev -f docker-compose.yml -f compose.dev.yaml -f compose.watch.yaml down --remove-orphans
+~~~
+
+For disposable verification use a distinct `-p ticketremaster-smoke-dev` on every
+command. Only that disposable project's final `down` may use `--volumes`; do not
+delete development or production data volumes. Reuse the built development images.
+
+Configuration checks verify the merged sync paths, pull lockout and unchanged
+database volumes. They do not establish full-stack runtime or live data health.
+See [Docker's Compose Watch guidance](https://docs.docker.com/compose/how-tos/file-watch/).

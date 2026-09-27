@@ -1,0 +1,451 @@
+# Explicit SMB overlay; Compose 2.32.2+. Apply after compose.dev.yaml.
+# Every source rule syncs into the existing container; dependencies rebuild explicitly.
+x-dev-watch-ignore: &dev-watch-ignore
+  - "**/.[eE][nN][vV]*"
+  - "**/*[sS][eE][cC][rR][eE][tT]*"
+  - "**/*[cC][rR][eE][dD][eE][nN][tT][iI][aA][lL]*"
+  - "**/*.[pP][eE][mM]"
+  - "**/*.[kK][eE][yY]"
+  - "**/*.[pP]12"
+  - "**/*.[pP][fF][xX]"
+  - "**/__pycache__/**"
+  - "**/*.py[cod]"
+  - "**/node_modules/**"
+  - "**/.venv/**"
+  - "**/venv/**"
+  - "**/dist/**"
+  - "**/build/**"
+  - "**/.git/**"
+  - "**/.agents/**"
+  - "**/.pytest_cache/**"
+  - "**/requirements*.txt"
+  - "**/package.json"
+  - "**/package-lock.json"
+  - "**/pyproject.toml"
+  - "**/uv.lock"
+  - "**/Dockerfile*"
+x-shared-watch-ignore: &shared-watch-ignore
+  - "**/.[eE][nN][vV]*"
+  - "**/*[sS][eE][cC][rR][eE][tT]*"
+  - "**/*[cC][rR][eE][dD][eE][nN][tT][iI][aA][lL]*"
+  - "**/*.[pP][eE][mM]"
+  - "**/*.[kK][eE][yY]"
+  - "**/*.[pP]12"
+  - "**/*.[pP][fF][xX]"
+  - "**/__pycache__/**"
+  - "**/*.py[cod]"
+  - "**/node_modules/**"
+  - "**/.venv/**"
+  - "**/venv/**"
+  - "**/dist/**"
+  - "**/build/**"
+  - "**/.git/**"
+  - "**/.agents/**"
+  - "**/.pytest_cache/**"
+  - "**/requirements*.txt"
+  - "**/package.json"
+  - "**/package-lock.json"
+  - "**/pyproject.toml"
+  - "**/uv.lock"
+  - "**/Dockerfile*"
+  - "!secrets.py"
+services:
+  auth-orchestrator:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./orchestrators/auth-orchestrator
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  credit-orchestrator:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./orchestrators/credit-orchestrator
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  event-orchestrator:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./orchestrators/event-orchestrator
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  marketplace-orchestrator:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./orchestrators/marketplace-orchestrator
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  qr-orchestrator:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./orchestrators/qr-orchestrator
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  ticket-purchase-orchestrator:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./orchestrators/ticket-purchase-orchestrator
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  ticket-verification-orchestrator:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./orchestrators/ticket-verification-orchestrator
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  transfer-orchestrator:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./orchestrators/transfer-orchestrator
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  credit-transaction-service:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./services/credit-transaction-service
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  event-service:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./services/event-service
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  marketplace-service:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./services/marketplace-service
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  notification-service:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./services/notification-service
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  otp-wrapper:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./services/otp-wrapper
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  seat-inventory-service:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./services/seat-inventory-service
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  seat-service:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./services/seat-service
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  stripe-wrapper:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./services/stripe-wrapper
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  ticket-log-service:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./services/ticket-log-service
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  ticket-service:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./services/ticket-service
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  transfer-service:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./services/transfer-service
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  user-service:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./services/user-service
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+  venue-service:
+    volumes: !reset []
+    develop:
+      watch:
+        - action: sync
+          path: ./services/venue-service
+          target: /app
+          initial_sync: true
+          ignore: *dev-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
+        - action: sync
+          path: ./shared
+          target: /app/shared
+          initial_sync: true
+          ignore: *shared-watch-ignore
