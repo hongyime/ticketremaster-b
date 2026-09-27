@@ -5,7 +5,11 @@ services:
     image: ticketremaster-dev/credit-transaction-service:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: services/credit-transaction-service/Dockerfile
       target: dev
+      args:
+        REQUIREMENTS_FILE: services/credit-transaction-service/requirements.txt
     restart: 'no'
     init: true
     environment:
@@ -30,6 +34,8 @@ services:
     image: ticketremaster-dev/event-service:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: services/event-service/Dockerfile
       target: dev
     restart: 'no'
     init: true
@@ -55,7 +61,11 @@ services:
     image: ticketremaster-dev/marketplace-service:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: services/marketplace-service/Dockerfile
       target: dev
+      args:
+        REQUIREMENTS_FILE: services/marketplace-service/requirements.txt
     restart: 'no'
     init: true
     environment:
@@ -80,7 +90,11 @@ services:
     image: ticketremaster-dev/notification-service:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: services/notification-service/Dockerfile
       target: dev
+      args:
+        REQUIREMENTS_FILE: services/notification-service/requirements.txt
     restart: 'no'
     init: true
     environment:
@@ -111,7 +125,11 @@ services:
     image: ticketremaster-dev/otp-wrapper:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: services/otp-wrapper/Dockerfile
       target: dev
+      args:
+        REQUIREMENTS_FILE: services/otp-wrapper/requirements.txt
     restart: 'no'
     init: true
     environment:
@@ -136,6 +154,8 @@ services:
     image: ticketremaster-dev/seat-inventory-service:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: services/seat-inventory-service/Dockerfile
       target: dev
     restart: 'no'
     init: true
@@ -161,7 +181,11 @@ services:
     image: ticketremaster-dev/seat-service:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: services/seat-service/Dockerfile
       target: dev
+      args:
+        REQUIREMENTS_FILE: services/seat-service/requirements.txt
     restart: 'no'
     init: true
     environment:
@@ -186,7 +210,11 @@ services:
     image: ticketremaster-dev/stripe-wrapper:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: services/stripe-wrapper/Dockerfile
       target: dev
+      args:
+        REQUIREMENTS_FILE: services/stripe-wrapper/requirements.txt
     restart: 'no'
     init: true
     environment:
@@ -211,7 +239,11 @@ services:
     image: ticketremaster-dev/ticket-log-service:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: services/ticket-log-service/Dockerfile
       target: dev
+      args:
+        REQUIREMENTS_FILE: services/ticket-log-service/requirements.txt
     restart: 'no'
     init: true
     environment:
@@ -236,6 +268,8 @@ services:
     image: ticketremaster-dev/ticket-service:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: services/ticket-service/Dockerfile
       target: dev
     restart: 'no'
     init: true
@@ -261,7 +295,11 @@ services:
     image: ticketremaster-dev/transfer-service:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: services/transfer-service/Dockerfile
       target: dev
+      args:
+        REQUIREMENTS_FILE: services/transfer-service/requirements.txt
     restart: 'no'
     init: true
     environment:
@@ -286,6 +324,8 @@ services:
     image: ticketremaster-dev/user-service:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: services/user-service/Dockerfile
       target: dev
     restart: 'no'
     init: true
@@ -311,7 +351,11 @@ services:
     image: ticketremaster-dev/venue-service:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: services/venue-service/Dockerfile
       target: dev
+      args:
+        REQUIREMENTS_FILE: services/venue-service/requirements.txt
     restart: 'no'
     init: true
     environment:
@@ -336,6 +380,8 @@ services:
     image: ticketremaster-dev/auth-orchestrator:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: orchestrators/auth-orchestrator/Dockerfile
       target: dev
     restart: 'no'
     init: true
@@ -361,7 +407,11 @@ services:
     image: ticketremaster-dev/credit-orchestrator:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: orchestrators/credit-orchestrator/Dockerfile
       target: dev
+      args:
+        REQUIREMENTS_FILE: orchestrators/credit-orchestrator/requirements.txt
     restart: 'no'
     init: true
     environment:
@@ -386,6 +436,8 @@ services:
     image: ticketremaster-dev/event-orchestrator:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: orchestrators/event-orchestrator/Dockerfile
       target: dev
     restart: 'no'
     init: true
@@ -411,7 +463,11 @@ services:
     image: ticketremaster-dev/marketplace-orchestrator:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: orchestrators/marketplace-orchestrator/Dockerfile
       target: dev
+      args:
+        REQUIREMENTS_FILE: orchestrators/marketplace-orchestrator/requirements.txt
     restart: 'no'
     init: true
     environment:
@@ -436,7 +492,11 @@ services:
     image: ticketremaster-dev/qr-orchestrator:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: orchestrators/qr-orchestrator/Dockerfile
       target: dev
+      args:
+        REQUIREMENTS_FILE: orchestrators/qr-orchestrator/requirements.txt
     restart: 'no'
     init: true
     environment:
@@ -461,6 +521,8 @@ services:
     image: ticketremaster-dev/ticket-purchase-orchestrator:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: orchestrators/ticket-purchase-orchestrator/Dockerfile
       target: dev
     restart: 'no'
     init: true
@@ -486,7 +548,11 @@ services:
     image: ticketremaster-dev/ticket-verification-orchestrator:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: orchestrators/ticket-verification-orchestrator/Dockerfile
       target: dev
+      args:
+        REQUIREMENTS_FILE: orchestrators/ticket-verification-orchestrator/requirements.txt
     restart: 'no'
     init: true
     environment:
@@ -511,6 +577,8 @@ services:
     image: ticketremaster-dev/transfer-orchestrator:local
     pull_policy: never
     build:
+      context: .
+      dockerfile: orchestrators/transfer-orchestrator/Dockerfile
       target: dev
     restart: 'no'
     init: true

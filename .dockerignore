@@ -22,3 +22,13 @@
 **/logs
 **/backups
 **/*.log
+# Match the watch overlay for mixed-case private filenames.
+**/.[eE][nN][vV]*
+**/*[sS][eE][cC][rR][eE][tT]*
+**/*[cC][rR][eE][dD][eE][nN][tT][iI][aA][lL]*
+**/*.[pP][eE][mM]
+**/*.[kK][eE][yY]
+**/*.[pP]12
+**/*.[pP][fF][xX]
+# Required application source module; all other secret/credential exclusions remain.
+!shared/secrets.py
